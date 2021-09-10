@@ -99,7 +99,7 @@ class RubiksCube(Cube):
                 self._apply_basic_movement(movement[0], 3.0)
             return
         else:
-            print('Unsupported movement')
+            print(f'Unsupported movement: {movement}')
             return
 
     def get_piece_colors(self, x: int, y: int, z: int):

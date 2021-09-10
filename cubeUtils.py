@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 colors = ['W', 'O', 'G', 'R', 'B', 'Y']
 
@@ -19,6 +20,11 @@ cube_notations = dict({'U': ['U', -np.pi/2, 0, 0],
         
 cube_dirs = [[[[] for _ in range(3)] for _ in range(3) ] for _ in range(3)]
         
+def create_scramble():
+    movements = list(cube_notations.keys())
+    movements = [mov+suffix for mov in movements for suffix in ['', "'", '2']]
+    return random.choices(movements, k = random.randint(20, 35))
+
 def get_rotation_matrix(alpha, beta, gamma):
     Rx = [[1, 0, 0], 
             [0, np.cos(alpha), -np.sin(alpha)],
