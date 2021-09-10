@@ -45,6 +45,7 @@ class DistancePieces:
                 next_state = [x_next, y_next, z_next, colors_next]
                 if str(next_state) is not explored:
                     frontier.append([*next_state, dist+1])
+        self.memo[str(initial_state)] = None
         return None
 
 if __name__ == '__main__':
