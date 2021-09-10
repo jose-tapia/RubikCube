@@ -88,19 +88,18 @@ class RubiksCube(Cube):
         return []
 
     def apply_movement(self, movement):
-        if movement in cubeUtils.cube_notations:
-            self._apply_basic_movement(movement)
-            return
-        
-        if len(movement) == 2 and movement[0] in cubeUtils.cube_notations and movement[1] in ["'", '2']:
-            if movement[1] == '2':
-                self._apply_basic_movement(movement[0], 2.0)
-            if movement[1] == "'":
-                self._apply_basic_movement(movement[0], 3.0)
+        if movement in cubeUtils.get_all_movements():
+            basic_mov = cubeUtils.get_basic_prefix(movement)
+            times = cubeUtils.get_suffix_times(movement)
+            self._apply_basic_movement(basic_mov, times)
             return
         else:
             print(f'Unsupported movement: {movement}')
             return
+
+    def apply_scramble(self, scramble):
+        for movement in scramble:
+            self.apply_movement(movement)
 
     def get_piece_colors(self, x: int, y: int, z: int):
         colors = []
@@ -108,19 +107,29 @@ class RubiksCube(Cube):
             colors.append(self.cube[x][y][z].get_color(dir))
         return colors
 
+    def set_piece_colors(self, x, y, z, colors):
+        dirs = cubeUtils.cube_dirs[x][y][z]
+        if len(dirs) != len(colors):
+            return 
+        for dir, color in zip(dirs, colors):
+            self.cube[x][y][z].set_color(dir, color)
+
     def find_piece(self, colors):
-        colors.sort()
+        colors_copy = colors.copy()
+        colors_copy.sort()
         positions = self.get_face_positions()
         for x, y, z in positions:
             colors_piece = self.get_piece_colors(x, y, z)
             colors_piece.sort()
-            if colors_piece == colors:
+            if colors_piece == colors_copy:
                 return x, y, z
         return None
-
-    def apply_scramble(self, scramble):
-        for movement in scramble:
-            self.apply_movement(movement)
+    
+    def erase_piece(self, colors):
+        x, y, z = self.find_piece(colors)
+        dirs = cubeUtils.cube_dirs[x][y][z]
+        for dir in dirs:
+            self.cube[x][y][z].set_color(dir, 'X')
 
     def _apply_basic_movement(self, movement, times = 1.0):
         dir, alpha, beta, gamma = cubeUtils.cube_notations[movement]

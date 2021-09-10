@@ -19,10 +19,36 @@ cube_notations = dict({'U': ['U', -np.pi/2, 0, 0],
                        'D': ['D', np.pi/2, 0, 0]})
         
 cube_dirs = [[[[] for _ in range(3)] for _ in range(3) ] for _ in range(3)]
-        
+
+def get_basic_movements():
+    return list(cube_notations.keys())
+
+def get_suffix_times(movement):
+    if len(movement) == 1:
+        return 1.0
+    if len(movement) > 2:
+        return None
+    if movement[1] == '2':
+        return 2.0
+    if movement[1] == "'":
+        return 3.0
+    return None
+
+def get_basic_prefix(movement):
+    if len(movement) == 1:
+        return movement
+    if len(movement) > 2:
+        return None
+    if get_suffix_times(movement) is not None:
+        return movement[0]
+    return None
+
+def get_all_movements():
+    basic_movs = get_basic_movements()
+    return [mov+suffix for mov in basic_movs for suffix in ['', "'", '2']]
+
 def create_scramble():
-    movements = list(cube_notations.keys())
-    movements = [mov+suffix for mov in movements for suffix in ['', "'", '2']]
+    movements = get_all_movements()
     return random.choices(movements, k = random.randint(20, 35))
 
 def get_rotation_matrix(alpha, beta, gamma):
