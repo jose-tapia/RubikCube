@@ -85,13 +85,14 @@ class Cube:
 class RubiksCube(Cube):
     def __init__(self, scramble = []):
         self.cube = [[[Cube() for _ in range(3)] for _ in range(3)] for _ in range(3)]
-
+        self.cube_dirs = [[[[] for _ in range(3)] for _ in range(3) ] for _ in range(3)]
         colors = ['W', 'O', 'G', 'R', 'B', 'Y']
         dirs = ['U', 'W', 'S', 'E', 'N', 'D']
         for dir, color in zip(dirs, colors):
             positions = self.get_face_positions(dir)
             for x, y, z in positions:
                 self.cube[x][y][z].set_color(dir, color)
+                self.cube_dirs[x][y][z].append(dir)
         
         self._apply_scramble(scramble)
     
@@ -134,18 +135,48 @@ class RubiksCube(Cube):
             print('Unsupported movement')
             return
 
+    def get_piece_colors(self, x: int, y: int, z: int):
+        colors = []
+        for dir in self.cube_dirs[x][y][z]:
+            colors.append(self.cube[x][y][z].get_color(dir))
+        return colors
+
+    def find_piece(self, colors):
+        colors.sort()
+        positions = self.get_face_positions()
+        for x, y, z in positions:
+            colors_piece = self.get_piece_colors(x, y, z)
+            colors_piece.sort()
+            if colors_piece == colors:
+                return x, y, z
+        return None
 
     def _apply_scramble(self, scramble):
         for movement in scramble:
             self.apply_movement(movement)
-
+            
 if __name__ == "__main__":
     #rubik_1 = RubiksCube(["D'", "R", "L", "F", "R'", "L", "U2", "F", "D2", "R'", "L2", "F2", "D", "R2", "B2", "D2", "L2", "U'", "B2", "U'"])
     #rubik_2 = RubiksCube(["F", "R2", "U'"])
     rubik_3 = RubiksCube(["B", "F", "U", "L'", "D'", "R'","F'"])
     rubik_4 = RubiksCube(["U'", "F", "B", "R'", "U", "R'", "F'", "D2", "L", "F", "U'", "F2", "L2", "U'", "D", "L2", "U'", "B2", "U'"])
     # U' F B R' U R' F' D2 L F U' F2 L2 U' D L2 U' B2 U'
-
+    rubik_5 = RubiksCube()
     #print(rubik_1)
     #print(rubik_2)
-    print(rubik_4)
+    print(rubik_5)
+
+    positions = rubik_5.get_face_positions('S')
+    for x, y, z in positions:
+        print(rubik_5.get_piece_colors(x, y, z))
+    print(rubik_5.find_piece(['G', 'R']))
+
+    rubik_5._apply_scramble(["D'", "R'", "D", "R", "D", "F", "D'", "F'"])
+    rubik_5._apply_scramble(["D", "D"])
+    rubik_5._apply_scramble(["D'", "R'", "D", "R", "D", "F", "D'", "F'"])
+
+    for x, y, z in positions:
+        print(rubik_5.get_piece_colors(x, y, z))
+    
+    print(rubik_5.find_piece(['G', 'R']))
+    print(rubik_5)
