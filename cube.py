@@ -9,11 +9,11 @@ orientation = dict({'U':[0, None, None],
                     'D':[2, None, None],
                     '':[None, None, None]})
 
-cube_notations = dict({'U': ['U', np.pi/2, 0, 0],
-                       'B': ['N', 0, np.pi/2, 0],
+cube_notations = dict({'U': ['U', -np.pi/2, 0, 0],
+                       'B': ['N', 0, -np.pi/2, 0],
                        'R': ['E', 0, 0, np.pi/2],
                        'F': ['S', 0, np.pi/2, 0], 
-                       'L': ['W', 0, 0, np.pi/2],
+                       'L': ['W', 0, 0, -np.pi/2],
                        'D': ['D', np.pi/2, 0, 0]})
 
 class Cube:
@@ -99,9 +99,16 @@ class RubiksCube(Cube):
         if dir != '':
             positions = self.get_face_positions(dir)
             colors = [self.cube[x][y][z].get_color(dir) for x, y, z in positions]
-            return [colors[:3], colors[3:6], colors[6:]]   
-        else:
-            return []
+            if dir in ['U', 'S', 'W']:
+                return [colors[:3], colors[3:6], colors[6:]]   
+            if dir in ['N', 'E']:
+                color_matrix = [colors[:3], colors[3:6], colors[6:]]
+                for idx in range(3):
+                    color_matrix[idx].reverse()
+                return color_matrix
+            if dir == 'D':
+                return [colors[6:], colors[3:6], colors[:3]]
+        return []
     
     def _apply_basic_movement(self, movement):
         dir, alpha, beta, gamma = cube_notations[movement]
@@ -116,9 +123,11 @@ class RubiksCube(Cube):
             self._apply_basic_movement(movement)
             return
         
-        if len(movement) == 2 and movement[0] in cube_notations and movement[1] == '\'':
+        if len(movement) == 2 and movement[0] in cube_notations and movement[1] in ["'", '2']:
             self._apply_basic_movement(movement[0])
             self._apply_basic_movement(movement[0])
+            if movement[1] == '2':
+                return
             self._apply_basic_movement(movement[0])
             return
         else:
@@ -129,9 +138,13 @@ class RubiksCube(Cube):
     def _apply_scramble(self, scramble):
         for movement in scramble:
             self.apply_movement(movement)
-                
 
 if __name__ == "__main__":
-    rubik = RubiksCube(['D\''])
-    
-    print(rubik)
+    #rubik_1 = RubiksCube(["D'", "R", "L", "F", "R'", "L", "U2", "F", "D2", "R'", "L2", "F2", "D", "R2", "B2", "D2", "L2", "U'", "B2", "U'"])
+    #rubik_2 = RubiksCube(["F", "R2", "U'"])
+    rubik_3 = RubiksCube(["B", "F", "U", "L'", "D'", "R'","F'"])
+    rubik_4 = RubiksCube(["U'", "F", "B", "R'", "U", "R'", "F'", "D2", "L", "F", "U'", "F2", "L2", "U'", "D", "L2", "U'", "B2", "U'"])
+
+    #print(rubik_1)
+    #print(rubik_2)
+    print(rubik_4)
