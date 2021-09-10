@@ -110,13 +110,14 @@ class RubiksCube(Cube):
                 return [colors[6:], colors[3:6], colors[:3]]
         return []
     
-    def _apply_basic_movement(self, movement):
+    def _apply_basic_movement(self, movement, times = 1.0):
         dir, alpha, beta, gamma = cube_notations[movement]
+        alpha_t, beta_t, gamma_t = alpha * times, beta * times, gamma * times
 
-        self.apply_rotation(alpha, beta, gamma, dir)
+        self.apply_rotation(alpha_t, beta_t, gamma_t, dir)
         positions = self.get_face_positions(dir)
         for x, y, z in positions:
-            self.cube[x][y][z].apply_rotation(alpha, beta, gamma)
+            self.cube[x][y][z].apply_rotation(alpha_t, beta_t, gamma_t)
 
     def apply_movement(self, movement):
         if movement in cube_notations:
@@ -124,11 +125,10 @@ class RubiksCube(Cube):
             return
         
         if len(movement) == 2 and movement[0] in cube_notations and movement[1] in ["'", '2']:
-            self._apply_basic_movement(movement[0])
-            self._apply_basic_movement(movement[0])
             if movement[1] == '2':
-                return
-            self._apply_basic_movement(movement[0])
+                self._apply_basic_movement(movement[0], 2.0)
+            if movement[1] == "'":
+                self._apply_basic_movement(movement[0], 3.0)
             return
         else:
             print('Unsupported movement')
@@ -144,6 +144,7 @@ if __name__ == "__main__":
     #rubik_2 = RubiksCube(["F", "R2", "U'"])
     rubik_3 = RubiksCube(["B", "F", "U", "L'", "D'", "R'","F'"])
     rubik_4 = RubiksCube(["U'", "F", "B", "R'", "U", "R'", "F'", "D2", "L", "F", "U'", "F2", "L2", "U'", "D", "L2", "U'", "B2", "U'"])
+    # U' F B R' U R' F' D2 L F U' F2 L2 U' D L2 U' B2 U'
 
     #print(rubik_1)
     #print(rubik_2)
