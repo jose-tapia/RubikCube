@@ -126,7 +126,10 @@ class RubiksCube(Cube):
         return None
     
     def erase_piece(self, colors):
-        x, y, z = self.find_piece(colors)
+        positions = self.find_piece(colors)
+        if positions is None:
+            return
+        x, y, z = positions
         dirs = cubeUtils.cube_dirs[x][y][z]
         for dir in dirs:
             self.cube[x][y][z].set_color(dir, 'X')
