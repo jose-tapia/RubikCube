@@ -29,18 +29,18 @@ class Node:
     def __lt__(self, other):
         return self.cost < other.cost
 
-def search(initial_state, push_state, pop_state, cost_function):
+def search(initial_state, search_functions):
     goal_state = RubiksCube()
 
     frontier = []
     explored = set()
 
-    initial_node = Node(initial_state, cost = cost_function(initial_state, 0))
-    push_state(initial_node, frontier)
+    initial_node = Node(initial_state, cost = search_functions['cost_function'](initial_state, 0))
+    search_functions['push_state'](initial_node, frontier)
 
     all_movements = CubeUtils.get_all_movements()
     while frontier:
-        current_node = pop_state(frontier)
+        current_node = search_functions['pop_state'](frontier)
 
         if str(current_node.state) in explored:
             continue
@@ -60,15 +60,15 @@ def search(initial_state, push_state, pop_state, cost_function):
                             current_node, 
                             current_node.level + 1, 
                             movement, 
-                            cost_function(next_state, current_node.level + 1))
+                            search_functions['cost_function'](next_state, current_node.level + 1))
 
-            push_state(next_node, frontier)
+            search_functions['push_state'](next_node, frontier)
     return None
 
 
-
 if __name__ == '__main__':
-    scramble = CubeUtils.create_scramble()[:7]
+    # Size 8 works with movements
+    scramble = CubeUtils.create_scramble()[:8]
     cube = RubiksCube(scramble)
 
     push_state_heap = lambda node, frontier: heappush(frontier, node)
@@ -82,8 +82,33 @@ if __name__ == '__main__':
     cost_function_movements = lambda cube, cost: cost + distances.get_movements_average(cube)
     cost_function_default = lambda _, cost: cost
 
+
+    search_functions_dfs = dict({
+        'push_state': push_state_list,
+        'pop_state': pop_state_dfs,
+        'cost_function': cost_function_default})
+    
+    search_functions_bfs = dict({
+        'push_state': push_state_list,
+        'pop_state': pop_state_bfs,
+        'cost_function': cost_function_default})
+    
+    search_functions_Astar_movement = dict({
+        'push_state': push_state_heap,
+        'pop_state': pop_state_heap,
+        'cost_function': cost_function_movements})
+    
+    search_functions_Astar_manhattan = dict({
+        'push_state': push_state_heap,
+        'pop_state': pop_state_heap,
+        'cost_function': cost_function_manhattan})
+
+
+
+    print(f'Initial scramble : {scramble}, with size {len(scramble)}')
+
     start = time.time()
-    path = search(cube, push_state_heap, pop_state_heap, cost_function_movements)
+    path = search(cube, search_functions_Astar_movement)
     end = time.time()
 
     print(path)
