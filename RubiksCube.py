@@ -166,7 +166,17 @@ class RubiksCube:
 
 if __name__ == '__main__':
     cube = RubiksCube()
+
+    
     print(cube)
+    for piece in cubeUtils.cube_pieces_positions:
+        colors = []
+        for face, x, y in piece:
+            colors.append(cube.faces[face][x][y])
+        colorines = ''.join(colors)
+        print(f'Piece : {colorines}')
+
+    """
     A = cube.find_piece(['Y', 'O', 'B'])
     print(A)
     cube.apply_movement("B2")
@@ -175,7 +185,7 @@ if __name__ == '__main__':
     print(cube)
     cube.set_piece(A, ['1', '2', '3'])
     print(cube)
-
+    """
 
 #    cube.apply_basic_movement('L')
  #   print(cube)
