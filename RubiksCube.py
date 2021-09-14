@@ -1,15 +1,17 @@
 import CubeUtils
 
+basic_movements = CubeUtils.get_basic_movements()
+
 class RubiksCube:
     def __init__(self, scramble = []):
         #self.faces = [[[f'{a+3*b}{color}' for a in range(3)] for b in range(3) ] for color in CubeUtils.colors]
         self.faces = [[[f'{color}' for _ in range(3)] for _ in range(3) ] for color in CubeUtils.colors]
 
-        self._basic_movements = CubeUtils.get_basic_movements()
-        self._all_movements = CubeUtils.get_all_movements()
-
         for movement in scramble:
             self.apply_movement(movement)
+    
+    def __eq__(self, other):
+        return self.faces == other.faces
     
     def __str__(self):
         empty = [[' ']*3]*3
@@ -30,7 +32,7 @@ class RubiksCube:
     def apply_movement(self, movement):
         basic_movement = CubeUtils.get_movement_prefix(movement)
         suffix_movement = CubeUtils.get_movement_suffix(movement)
-        if basic_movement not in self._basic_movements:
+        if basic_movement not in basic_movements:
             return 
         
         face, face_dir, row, column, line_dir = CubeUtils.cube_movements[basic_movement]

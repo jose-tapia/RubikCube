@@ -56,7 +56,6 @@ class Distances:
         #return cost_sum / len(self._pieces_positions)
         return cost_sum / 4
 
-
     def get_manhattan_3D(self, cube):
         cost_sum = 0
         for idx in range(len(self._pieces_positions)):
