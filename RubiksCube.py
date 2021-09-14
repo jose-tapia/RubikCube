@@ -2,7 +2,8 @@ import cubeUtils
 
 class RubiksCube:
     def __init__(self, scramble = []):
-        self.faces = [[[f'{a+3*b}{color}' for a in range(3)] for b in range(3) ] for color in cubeUtils.colors]
+        #self.faces = [[[f'{a+3*b}{color}' for a in range(3)] for b in range(3) ] for color in cubeUtils.colors]
+        self.faces = [[[f'{color}' for a in range(3)] for b in range(3) ] for color in cubeUtils.colors]
 
         self._basic_movements = cubeUtils.get_basic_movements()
         self._all_movements = cubeUtils.get_all_movements()
@@ -11,7 +12,7 @@ class RubiksCube:
             self.apply_movement(movement)
     
     def __str__(self):
-        empty = [['  ']*3]*3
+        empty = [[' ']*3]*3
         first_line = [empty, self.faces[0]]
         second_line = self.faces[1:5]
         third_line = [empty, self.faces[5]]
@@ -65,6 +66,28 @@ class RubiksCube:
             self._rotate_matrix(self.faces[4], dir = 'L')
             self._rotate_lines(column = 0, dir = 'L')
         """
+
+    def find_piece(self, colors):
+        colors_copy = colors.copy()
+        colors_copy.sort()
+        for piece in cubeUtils.cube_pieces_positions:
+            color_piece = []
+            for face, x, y in piece:
+                color_piece.append(self.faces[face][x][y])
+            color_piece.sort()
+            if colors_copy == color_piece:
+                return piece
+        return None
+
+    def erase_piece(self, piece):
+        for face, x, y in piece:
+            self.faces[face][x][y] = 'X'
+
+    def set_piece(self, piece, colors):
+        if len(piece) != len(colors):
+            return 
+        for (face, x, y), color in zip(piece, colors):
+            self.faces[face][x][y] = color
     
     @staticmethod
     def _rotate_matrix(matrix, dir = ''):
@@ -144,8 +167,16 @@ class RubiksCube:
 if __name__ == '__main__':
     cube = RubiksCube()
     print(cube)
+    A = cube.find_piece(['Y', 'O', 'B'])
+    print(A)
     cube.apply_movement("B2")
     print(cube)
+    cube.erase_piece(A)
+    print(cube)
+    cube.set_piece(A, ['1', '2', '3'])
+    print(cube)
+
+
 #    cube.apply_basic_movement('L')
  #   print(cube)
   #  cube.apply_basic_movement('L')
