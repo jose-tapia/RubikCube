@@ -1,12 +1,12 @@
-import cubeUtils
+import CubeUtils
 
 class RubiksCube:
     def __init__(self, scramble = []):
-        #self.faces = [[[f'{a+3*b}{color}' for a in range(3)] for b in range(3) ] for color in cubeUtils.colors]
-        self.faces = [[[f'{color}' for a in range(3)] for b in range(3) ] for color in cubeUtils.colors]
+        #self.faces = [[[f'{a+3*b}{color}' for a in range(3)] for b in range(3) ] for color in CubeUtils.colors]
+        self.faces = [[[f'{color}' for _ in range(3)] for _ in range(3) ] for color in CubeUtils.colors]
 
-        self._basic_movements = cubeUtils.get_basic_movements()
-        self._all_movements = cubeUtils.get_all_movements()
+        self._basic_movements = CubeUtils.get_basic_movements()
+        self._all_movements = CubeUtils.get_all_movements()
 
         for movement in scramble:
             self.apply_movement(movement)
@@ -28,12 +28,12 @@ class RubiksCube:
         return ' '.join(cube_str)
 
     def apply_movement(self, movement):
-        basic_movement = cubeUtils.get_movement_prefix(movement)
-        suffix_movement = cubeUtils.get_movement_suffix(movement)
+        basic_movement = CubeUtils.get_movement_prefix(movement)
+        suffix_movement = CubeUtils.get_movement_suffix(movement)
         if basic_movement not in self._basic_movements:
             return 
         
-        face, face_dir, row, column, line_dir = cubeUtils.cube_movements[basic_movement]
+        face, face_dir, row, column, line_dir = CubeUtils.cube_movements[basic_movement]
 
         if suffix_movement == "'":
             face_dir = 'L' if face_dir == 'R' else 'R'
@@ -70,7 +70,7 @@ class RubiksCube:
     def find_piece(self, colors):
         colors_copy = colors.copy()
         colors_copy.sort()
-        for piece in cubeUtils.cube_pieces_positions:
+        for piece in CubeUtils.cube_pieces_positions:
             color_piece = []
             for face, x, y in piece:
                 color_piece.append(self.faces[face][x][y])
@@ -80,6 +80,8 @@ class RubiksCube:
         return None
 
     def erase_piece(self, piece):
+        if piece is None:
+            return
         for face, x, y in piece:
             self.faces[face][x][y] = 'X'
 
@@ -88,6 +90,12 @@ class RubiksCube:
             return 
         for (face, x, y), color in zip(piece, colors):
             self.faces[face][x][y] = color
+    
+    def get_colors(self, piece):
+        colors = []
+        for face, x, y in piece:
+            colors.append(self.faces[face][x][y])
+        return colors
     
     @staticmethod
     def _rotate_matrix(matrix, dir = ''):
@@ -169,7 +177,7 @@ if __name__ == '__main__':
 
     
     print(cube)
-    for piece in cubeUtils.cube_pieces_positions:
+    for piece in CubeUtils.cube_pieces_positions:
         colors = []
         for face, x, y in piece:
             colors.append(cube.faces[face][x][y])
