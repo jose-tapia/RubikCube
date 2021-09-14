@@ -7,8 +7,10 @@ from copy import deepcopy
 
 distances = Distances()
 
+basic_movements = CubeUtils.get_basic_movements()
+
 class Node:
-    def __init__(self, state, parent = None, level = 0, movement = '', cost = 0):
+    def __init__(self, state, parent = None, level = 0, movement = None, cost = 0):
         self.state = state 
         self.parent = parent 
         self.level = level 
@@ -29,6 +31,18 @@ class Node:
     def __lt__(self, other):
         return self.cost < other.cost
 
+def reduce_factor_branch(movement, past_movement):
+    basic_movement = CubeUtils.get_movement_prefix(movement)
+    basic_past_movement = CubeUtils.get_movement_prefix(past_movement)
+
+    if basic_past_movement is None:
+        return False
+
+    idx_movement = basic_movements.index(basic_movement)
+    idx_past_movement = basic_movements.index(basic_past_movement)
+
+    return idx_movement == idx_past_movement or (idx_movement >= 3 and idx_movement == idx_past_movement + 3)
+    
 def search(initial_state, search_functions):
     goal_state = RubiksCube()
 
@@ -50,6 +64,9 @@ def search(initial_state, search_functions):
             return current_node
 
         for movement in all_movements:
+            if reduce_factor_branch(movement, current_node.movement):
+                continue            
+
             next_state = deepcopy(current_node.state)
             next_state.apply_movement(movement)
 
@@ -75,7 +92,7 @@ def get_solution(path):
 
 if __name__ == '__main__':
     # Size 8 works with movements
-    scramble = CubeUtils.create_scramble()[:8]
+    scramble = CubeUtils.create_scramble()[:10]
     cube = RubiksCube(scramble)
 
     push_state_heap = lambda node, frontier: heappush(frontier, node)
@@ -120,4 +137,7 @@ if __name__ == '__main__':
 
     print(path)
     print(f'Time : {end-start}')
-    print(f'Solution : {get_solution(path)}, size {len(get_solution(path))}')
+    
+
+    print(f'Initial scramble : {scramble}, size {len(scramble)}')
+    print(f'Solution :\t   {get_solution(path)}, size {len(get_solution(path))}')

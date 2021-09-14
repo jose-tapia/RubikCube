@@ -11,6 +11,8 @@ class RubiksCube:
             self.apply_movement(movement)
     
     def __eq__(self, other):
+        if other is None:
+            return False
         return self.faces == other.faces
     
     def __str__(self):

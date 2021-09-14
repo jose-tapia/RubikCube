@@ -4,11 +4,11 @@ import random
 colors = ['W', 'O', 'G', 'R', 'B', 'Y']
 
 cube_movements = dict({'U' : [0, 'L', 0, None, 'L'],
-                       'D' : [5, 'L', 2, None, 'R'],
-                       'L' : [1, 'L', None, 3, 'L'], 
-                       'R' : [3, 'L', None, 5, 'R'],
                        'F' : [2, 'L', None, 2, 'R'],
-                       'B' : [4, 'L', None, 0, 'L']})
+                       'L' : [1, 'L', None, 3, 'L'],
+                       'D' : [5, 'L', 2, None, 'R'],
+                       'B' : [4, 'L', None, 0, 'L'],
+                       'R' : [3, 'L', None, 5, 'R']})
 
 cube_pieces_positions = [[(0, 0, 0), (1, 0, 0), (4, 0, 2)],
                          [(0, 0, 1), (4, 0, 1)],
@@ -45,7 +45,7 @@ def get_basic_movements():
 def get_movement_suffix(movement):
     if movement is None:
         return None
-    elif len(movement) == 1 or len(movement) > 2:
+    elif len(movement) <= 1 or len(movement) > 2:
         return ''
     elif movement[1] in ['2', "'"]:
         return movement[1]
