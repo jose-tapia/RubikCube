@@ -65,6 +65,13 @@ def search(initial_state, search_functions):
             search_functions['push_state'](next_node, frontier)
     return None
 
+def get_solution(path):
+    solution = []
+    while path.parent:
+        solution.append(path.movement)
+        path = path.parent
+    solution.reverse()
+    return solution
 
 if __name__ == '__main__':
     # Size 8 works with movements
@@ -105,7 +112,7 @@ if __name__ == '__main__':
 
 
 
-    print(f'Initial scramble : {scramble}, with size {len(scramble)}')
+    print(f'Initial scramble : {scramble}, size {len(scramble)}')
 
     start = time.time()
     path = search(cube, search_functions_Astar_movement)
@@ -113,3 +120,4 @@ if __name__ == '__main__':
 
     print(path)
     print(f'Time : {end-start}')
+    print(f'Solution : {get_solution(path)}, size {len(get_solution(path))}')
