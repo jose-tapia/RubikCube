@@ -102,8 +102,8 @@ if __name__ == '__main__':
     pop_state_dfs = lambda frontier: frontier.pop()
     pop_state_bfs = lambda frontier: frontier.pop(0)
 
-    cost_function_manhattan = lambda cube, cost: cost + distances.get_manhattan_3D(cube)
-    cost_function_movements = lambda cube, cost: cost + distances.get_movements_average(cube)
+    cost_function_manhattan = lambda cube, cost: cost + distances.get_manhattan_3D(cube) / 6
+    cost_function_movements = lambda cube, cost: cost + distances.get_movements_average(cube) / 4
     cost_function_default = lambda _, cost: cost
 
 

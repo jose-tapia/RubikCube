@@ -54,7 +54,7 @@ class Distances:
             cost_sum += self._memo_distance[str([idx, colors])]
         
         #return cost_sum / len(self._pieces_positions)
-        return cost_sum / 4
+        return cost_sum 
 
     def get_manhattan_3D(self, cube):
         cost_sum = 0
@@ -70,7 +70,7 @@ class Distances:
             cost_sum += abs(x_f - x) + abs(y_f - y) + abs(z_f - z)
         
         #return cost_sum / len(self._pieces_positions)
-        return cost_sum / 6
+        return cost_sum 
 
 if __name__ == '__main__':
     scramble = CubeUtils.create_scramble()[:3]
