@@ -5,8 +5,6 @@ from heapq import heappop, heappush
 import time
 from copy import deepcopy
 
-distances = Distances()
-
 basic_movements = CubeUtils.get_basic_movements()
 
 class Node:
@@ -92,7 +90,9 @@ def get_solution(path):
 
 if __name__ == '__main__':
     # Size 8 works with movements
-    scramble = CubeUtils.create_scramble()[:10]
+    
+    distances = Distances()
+    scramble = CubeUtils.create_scramble()[:8]
     cube = RubiksCube(scramble)
 
     push_state_heap = lambda node, frontier: heappush(frontier, node)
