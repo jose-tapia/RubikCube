@@ -1,5 +1,5 @@
-from cube import RubiksCube
-import cubeUtils
+from Cube import RubiksCube
+import CubeUtils
 import time
 
 class DistancePieces:
@@ -40,7 +40,7 @@ class DistancePieces:
         while frontier:
             x, y, z, colors, dist = frontier.pop(0)
 
-            movements = cubeUtils.get_all_movements()
+            movements = CubeUtils.get_all_movements()
             for mov in movements:
                 cube.erase_piece(colors)
                 cube.set_piece_colors(x, y, z, colors)
@@ -76,7 +76,7 @@ class DistancePieces:
 
 if __name__ == '__main__':
     A = RubiksCube()
-    scramble = cubeUtils.create_scramble()
+    scramble = CubeUtils.create_scramble()
     print(scramble)
 
     print(A)
