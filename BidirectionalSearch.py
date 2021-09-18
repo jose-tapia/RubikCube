@@ -15,6 +15,52 @@ class BidirectionalNode(Search.Node):
         # Store if belongs to initial search or end search
         self.group = group
 
+class AStarSearch:
+    def __init__(self, initial_state, goal_state):
+        self.initial_state = initial_state
+        self.goal_state = goal_state 
+        self.distances = Distances(goal_state)
+
+        self.frontier = []
+        self.explored = dict()
+
+        initial_node = Search.Node(initial_state, cost = self.distances.get_manhattan_3D(initial_state) / 5)
+        heappush(self.frontier, initial_node)
+
+        self.movements = CubeUtils.get_all_movements()
+
+    def next_node(self):
+        while self.frontier:
+            current_node = heappop(self.frontier)
+
+            if str(current_node.state) in self.explored:
+                continue
+            self.explored[str(current_node.state)] = current_node
+
+            if current_node.state == self.goal_state:
+                return current_node
+            
+            for movement in self.movements:
+                if Search.reduce_factor_branch(movement, current_node.movement):
+                    continue    
+
+                next_state = deepcopy(current_node.state)
+                next_state.apply_movement(movement)
+
+                if str(next_state) in self.explored:
+                    continue
+                
+                next_node_frontier = Search.Node(next_state, 
+                            current_node, 
+                            current_node.level + 1, 
+                            movement, 
+                            (current_node.level + 1) + self.distances.get_manhattan_3D(next_state) / 5)
+                heappush(self.frontier, next_node_frontier)
+
+            return current_node
+        return None
+
+
 def bidirectional_search(initial_state, heuristic_start, heuristic_end):
     frontier = []
     explored_start = dict()
@@ -79,6 +125,22 @@ def bidirectional_search(initial_state, heuristic_start, heuristic_end):
             if next_node is not None:
                 heappush(frontier, next_node)
 
+
+def second_bidirectional_search(initial_state):
+    goal_state = RubiksCube()
+    start_search = AStarSearch(initial_state, goal_state)
+    end_search = AStarSearch(goal_state, initial_state)
+
+    while True:
+        start_node = start_search.next_node()
+        end_node = end_search.next_node()
+
+        if str(start_node.state) in end_search.explored:
+            return start_node, end_search.explored[str(start_node.state)]
+
+        if str(end_node.state) in start_search.explored:
+            return start_search.explored[str(end_node.state)], end_node
+
 def get_solution(start, end):
     path_start = Search.get_solution(start)
 
@@ -109,7 +171,8 @@ if __name__ == '__main__':
     heuristic_end = lambda cube: distances_reverse.get_manhattan_3D(cube) / 8
 
     start_time = time.time()
-    start_node, end_node = bidirectional_search(cube, heuristic_start, heuristic_end)
+    #start_node, end_node = bidirectional_search(cube, heuristic_start, heuristic_end)
+    start_node, end_node = second_bidirectional_search(cube)
     end_time = time.time()
 
     path = get_solution(start_node, end_node)
