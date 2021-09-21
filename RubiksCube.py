@@ -4,7 +4,7 @@ basic_movements = CubeUtils.get_basic_movements()
 
 class RubiksCube:
     def __init__(self, scramble = []):
-        ###
+        #we initialize the attribute, referring to the object itself, also have a input of how the scramble its going. 
         self.faces = [[[color for _ in range(3)] for _ in range(3) ] for color in CubeUtils.colors]
 
         self.apply_scramble(scramble)
