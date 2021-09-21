@@ -54,39 +54,45 @@ def search(initial_state, heuristic):
           - initial_state: 
           - heuristic: 
     """
-    ###
+        #  - goal: The objective state 
     goal_state = RubiksCube()
 
-    ###
+    # It initialize the lists in which we are going to store the nodes we are creating
+        #  - explored: the nodes already explored (expanded)
+        #  - frontier: the nodes to be expolored (no expanded yet, but are obtained from the explored nodes
     frontier = []
     explored = set()
 
-    ###
+    # Starting in the initial state, it append to the frontier       
+
     initial_node = Node(initial_state, cost = heuristic(initial_state))
     heappush(frontier, initial_node)
     
-    ###
+    #We are going to verify e
     all_movements = CubeUtils.get_all_movements()
     while frontier:
-        ###
+        # removes and returns the smallest element from the heap.
         current_node = heappop(frontier)
 
-        ###
+        # If the node was already explored, we ommited to don´t expand again the same state.
+
         if str(current_node.state) in explored:
             continue
         explored.add(str(current_node.state))
 
-        ###
+        # If the actual node is the goal, we return the actual node which contains a reference to the previous solution node (which also contains a reference to the previous one and so on)
+
         if current_node.state == goal_state:
             return current_node
 
-        ###
+        ##expand the actual node  applying the all the operations
         for movement in all_movements:
             ###
             if reduce_factor_branch(movement, current_node.movement):
                 continue            
 
-            ###
+            ## We generate the next state, applying the corresponding movement
+            
             next_state = deepcopy(current_node.state)
             next_state.apply_movement(movement)
 
