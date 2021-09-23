@@ -53,6 +53,8 @@ The implementation of the mentioned heuristics can be found in HeuristicUtils.py
 
 To determine which constant could be a good option as a divisor to don't overestimate the cost of the solution, few functions were implemented in Experiments.py and analyzed in Statistics.py using an ANOVA test. 
 
+As well, in the folder Experiments, the results of the experiments can be found.
+
 ### Further improvements
 As attempts to improve the results obtained by the project, the following ideas can be considered:
  - Implement a bidirectional search (See BidirectionalSearch.py for two attempts of this idea)
