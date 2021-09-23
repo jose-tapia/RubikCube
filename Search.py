@@ -48,71 +48,67 @@ def reduce_factor_branch(movement, past_movement):
     
 def search(initial_state, heuristic):
     """
-        Function description:
+        Implementation of the A* algorithm to solve the Rubik's cube.
 
         Params: 
-          - initial_state: 
-          - heuristic: 
+          - initial_state: The Rubik's cube initial state
+          - heuristic: Function that takes a Rubik's cube and returns an estimation of how many movements are needed to solve it
     """
-        #  - goal: The objective state 
+    # Rubik's cube solved - Represents the objective state 
     goal_state = RubiksCube()
 
-    # It initialize the lists in which we are going to store the nodes we are creating
-        #  - explored: the nodes already explored (expanded)
-        #  - frontier: the nodes to be expolored (no expanded yet, but are obtained from the explored nodes
+    # Initialize the lists in which we are going to store the nodes we are creating
+    #  - explored: the nodes already explored (expanded)
+    #  - frontier: the nodes to be explored (not expanded yet, but are obtained from the explored nodes
     frontier = []
     explored = set()
 
-    # Starting in the initial state, it append to the frontier       
-
+    # Initialize initial state and append it to the frontier
     initial_node = Node(initial_state, cost = heuristic(initial_state))
     heappush(frontier, initial_node)
     
-    #We are going to verify e
+    # Check if frontier still has elements to visit
     all_movements = CubeUtils.get_all_movements()
-    while frontier:
-        # removes and returns the smallest element from the heap.
+    while len(frontier) > 0:
+        # Takes Rubik's cube with minimum estimated cost from the frontier
         current_node = heappop(frontier)
 
-        # If the node was already explored, we ommited to don´t expand again the same state.
-
+        # If the node was already explored, we ommited it
         if str(current_node.state) in explored:
             continue
         explored.add(str(current_node.state))
 
-        # If the actual node is the goal, we return the actual node which contains a reference to the previous solution node (which also contains a reference to the previous one and so on)
-
+        # Check if the node is the goal
         if current_node.state == goal_state:
             return current_node
 
-        ##expand the actual node  applying the all the operations
+        # Expand the actual state applying all the movements
         for movement in all_movements:
-            ###
+            # Check if the movement is valid (considering the last movement applied to the cube)
             if reduce_factor_branch(movement, current_node.movement):
                 continue            
 
-            ## We generate the next state, applying the corresponding movement
-            
+            # Generate the next state, applying the corresponding movement
             next_state = deepcopy(current_node.state)
             next_state.apply_movement(movement)
 
-            ###
+            # Verify if the cube was explored
             if str(next_state) in explored:
                 continue
             
-            ###
+            # Store information needed to represent the state
             next_node = Node(next_state, 
                             current_node, 
                             current_node.level + 1, 
                             movement, 
                             (current_node.level + 1) + heuristic(next_state))
 
-            ###
+            # Insert the node to the frontier
             heappush(frontier, next_node)
     return None
 
 def get_solution(path):
-    ###
+    # Obtain the solution path
     solution = []
     while path.parent:
         solution.append(path.movement)
@@ -121,23 +117,26 @@ def get_solution(path):
     return solution
 
 if __name__ == '__main__':
-    
+    # Initialization of the Rubik's cube to be solved
     distances = Distances()
     scramble = CubeUtils.create_scramble(8)
+    # Substitute 'scramble' with the array of movements wanted 
     cube = RubiksCube(scramble)
 
+    # Definition of the heuristics 
     cost_function_manhattan = lambda cube: distances.get_manhattan_3D(cube) / 6
     cost_function_movements = lambda cube: distances.get_movements_average(cube) / 4
 
     print(f'Initial scramble : {scramble}, size {len(scramble)}')
-
+    # Search solution
     start = time.time()
     path = search(cube, cost_function_movements)
     end = time.time()
 
+    # Visualize solution path
     print(path)
     print(f'Time : {end-start}')
 
-
+    # Print solution array
     print(f'Initial scramble : {scramble}, size {len(scramble)}')
     print(f'Solution :\t   {get_solution(path)}, size {len(get_solution(path))}')
