@@ -33,12 +33,12 @@ This implementation support the following movements:
 
 Giving a total of 18 movements. Nevertheless, the factor branch of the search is reduced to 12 thanks to clever observations that avoid repeat states. 
 
-The implementation of the Rubik's cube state can be found in RubiksCube.py.
+The implementation of the Rubik's cube state can be found in [RubiksCube.py](https://github.com/jose-tapia/RubiksCube/blob/b77101bfaa9983418a67cede168e5c5781d9dcfe/RubiksCube.py).
 
 ### Search
 We implemented an A* algorithm to search for a solution for a scrambled Rubik's cube; The algorithm is refactored to easily choose the heuristic that would be used in the search. 
 
-The implementation of the search can be found in Search.py.
+The implementation of the search can be found in [Search.py](https://github.com/jose-tapia/RubiksCube/blob/b77101bfaa9983418a67cede168e5c5781d9dcfe/Search.py).
 
 ### Heuristics
 
@@ -48,19 +48,20 @@ The heuristics considered in this project are:
  - Sum of the manhattan distances from each piece to its position in the goal state, looking at each piece in its respective tridimensional cartesian coordinates.
    - To don't overestimate the true cost of the solution, this number is divided by a fixed number, it used to be 8-9.
 
-The implementation of the mentioned heuristics can be found in HeuristicUtils.py
+The implementation of the mentioned heuristics can be found in [HeuristicUtils.py](https://github.com/jose-tapia/RubiksCube/blob/b77101bfaa9983418a67cede168e5c5781d9dcfe/HeuristicUtils.py).
+
 ### Experiments and statistics
 
-To determine which constant could be a good option as a divisor to don't overestimate the cost of the solution, few functions were implemented in Experiments.py and analyzed in Statistics.py using an ANOVA test. 
+To determine which constant could be a good option as a divisor to don't overestimate the cost of the solution, few functions were implemented in [Experiments.py](https://github.com/jose-tapia/RubiksCube/blob/b77101bfaa9983418a67cede168e5c5781d9dcfe/Experiments.py) and analyzed in [Statistics.py](https://github.com/jose-tapia/RubiksCube/blob/b77101bfaa9983418a67cede168e5c5781d9dcfe/Statistics.py) using an ANOVA test. 
 
 As well, in the folder Experiments, the results of the experiments can be found.
 
 ### Further improvements
 As attempts to improve the results obtained by the project, the following ideas can be considered:
- - Implement a bidirectional search (See BidirectionalSearch.py for two attempts of this idea)
+ - Implement a bidirectional search (See [BidirectionalSearch.py](https://github.com/jose-tapia/RubiksCube/blob/b77101bfaa9983418a67cede168e5c5781d9dcfe/BidirectionalSearch.py) for two attempts of this idea)
  - Include different heuristics
  - Include precalculated data to have a more precise estimation of the cost for the heuristic
- - One idea implemented was to use the tridimensional coordinates space to represent the Rubik's cube, it was discarded as the movements were very slow (Found in Geometry_3D folder)
+ - One idea implemented was to use the tridimensional coordinates space to represent the Rubik's cube, it was discarded as the movements were very slow (Found in [Geometry_3D](https://github.com/jose-tapia/RubiksCube/tree/main/Geometry_3D) folder)
  - Include a graphic way to interact with the user to ask for the scramble of the Rubik's cube and show the solution found by the program
 
 ## Results of the project
