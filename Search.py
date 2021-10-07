@@ -4,10 +4,13 @@ import CubeUtils
 from heapq import heappop, heappush
 import time
 from copy import deepcopy
+import json
 
 distances = Distances()
 
 basic_movements = CubeUtils.get_basic_movements()
+
+movements = {}
 
 class Node:
     def __init__(self, state, parent = None, level = 0, movement = None, cost = 0):
@@ -92,7 +95,7 @@ def get_solution(path):
 
 if __name__ == '__main__':
     # Size 8 works with movements
-    scramble = CubeUtils.create_scramble()[:10]
+    scramble = CubeUtils.create_scramble()[:9]
     cube = RubiksCube(scramble)
 
     push_state_heap = lambda node, frontier: heappush(frontier, node)
@@ -130,7 +133,7 @@ if __name__ == '__main__':
 
 
     print(f'Initial scramble : {scramble}, size {len(scramble)}')
-
+    
     start = time.time()
     path = search(cube, search_functions_Astar_movement)
     end = time.time()
@@ -138,6 +141,12 @@ if __name__ == '__main__':
     print(path)
     print(f'Time : {end-start}')
     
+    solution = get_solution(path)
 
     print(f'Initial scramble : {scramble}, size {len(scramble)}')
-    print(f'Solution :\t   {get_solution(path)}, size {len(get_solution(path))}')
+    print(f'Solution :\t   {solution}, size {len(solution)}')
+    movements["scramble"] = scramble
+    movements["solution"] = solution
+    print(movements)
+    with open('movements.json', 'w') as fp:
+        json.dump(movements, fp,  indent=4)
