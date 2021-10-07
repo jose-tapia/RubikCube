@@ -1,6 +1,6 @@
 import numpy as np
 from copy import deepcopy
-import cubeUtils
+import CubeUtils
 
 class Cube:
     def __init__(self):
@@ -23,7 +23,7 @@ class Cube:
         return ' '.join(cube_str)
 
     def get_face_positions(self, dir = ''):    
-        x_default, y_default, z_default = cubeUtils.orientation[dir]
+        x_default, y_default, z_default = CubeUtils.orientation[dir]
         xs = [x_default] if x_default is not None else range(len(self.cube))
         ys = [y_default] if y_default is not None else range(len(self.cube[0]))
         zs = [z_default] if z_default is not None else range(len(self.cube[0][0]))
@@ -43,14 +43,14 @@ class Cube:
             self.cube[x][y][z] = color
 
     def get_color(self, dir):
-        x, y, z = cubeUtils.orientation[dir]
+        x, y, z = CubeUtils.orientation[dir]
         x = x if x is not None else 1
         y = y if y is not None else 1
         z = z if z is not None else 1
         return self.cube[x][y][z]
     
     def apply_rotation(self, alpha, beta, gamma, face = ''):
-        R = cubeUtils.get_rotation_matrix(alpha, beta, gamma)
+        R = CubeUtils.get_rotation_matrix(alpha, beta, gamma)
         positions = self.get_face_positions(face)
 
         cube = deepcopy(self.cube)
@@ -62,13 +62,13 @@ class Cube:
 class RubiksCube(Cube):
     def __init__(self, scramble = []):
         self.cube = [[[Cube() for _ in range(3)] for _ in range(3)] for _ in range(3)]
-        cubeUtils.cube_dirs = [[[[] for _ in range(3)] for _ in range(3) ] for _ in range(3)]
+        CubeUtils.cube_dirs = [[[[] for _ in range(3)] for _ in range(3) ] for _ in range(3)]
 
-        for dir, color in zip(cubeUtils.orientation.keys(), cubeUtils.colors):
+        for dir, color in zip(CubeUtils.orientation.keys(), CubeUtils.colors):
             positions = self.get_face_positions(dir)
             for x, y, z in positions:
                 self.cube[x][y][z].set_color(dir, color)
-                cubeUtils.cube_dirs[x][y][z].append(dir)
+                CubeUtils.cube_dirs[x][y][z].append(dir)
         
         self.apply_scramble(scramble)
     
@@ -88,9 +88,9 @@ class RubiksCube(Cube):
         return []
 
     def apply_movement(self, movement):
-        if movement in cubeUtils.get_all_movements():
-            basic_mov = cubeUtils.get_basic_prefix(movement)
-            times = cubeUtils.get_suffix_times(movement)
+        if movement in CubeUtils.get_all_movements():
+            basic_mov = CubeUtils.get_basic_prefix(movement)
+            times = CubeUtils.get_suffix_times(movement)
             self._apply_basic_movement(basic_mov, times)
             return
         else:
@@ -103,12 +103,12 @@ class RubiksCube(Cube):
 
     def get_piece_colors(self, x: int, y: int, z: int):
         colors = []
-        for dir in cubeUtils.cube_dirs[x][y][z]:
+        for dir in CubeUtils.cube_dirs[x][y][z]:
             colors.append(self.cube[x][y][z].get_color(dir))
         return colors
 
     def set_piece_colors(self, x, y, z, colors):
-        dirs = cubeUtils.cube_dirs[x][y][z]
+        dirs = CubeUtils.cube_dirs[x][y][z]
         if len(dirs) != len(colors):
             return 
         for dir, color in zip(dirs, colors):
@@ -130,12 +130,12 @@ class RubiksCube(Cube):
         if positions is None:
             return
         x, y, z = positions
-        dirs = cubeUtils.cube_dirs[x][y][z]
+        dirs = CubeUtils.cube_dirs[x][y][z]
         for dir in dirs:
             self.cube[x][y][z].set_color(dir, 'X')
 
     def _apply_basic_movement(self, movement, times = 1.0):
-        dir, alpha, beta, gamma = cubeUtils.cube_notations[movement]
+        dir, alpha, beta, gamma = CubeUtils.cube_notations[movement]
         alpha_t, beta_t, gamma_t = alpha * times, beta * times, gamma * times
 
         self.apply_rotation(alpha_t, beta_t, gamma_t, dir)

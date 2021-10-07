@@ -5,7 +5,6 @@ from heapq import heappop, heappush
 import time
 from copy import deepcopy
 import json
-
 distances = Distances()
 
 basic_movements = CubeUtils.get_basic_movements()
